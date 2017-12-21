@@ -1,0 +1,198 @@
+        #==============================================
+    #  REPORT - UPDATE CHART COUNT - TOTAL_PENJUALAN DAILY
+    #==============================================
+   UPDATE rpt_daily_chart SET Val_Cnt=(SELECT sum(cnt1.TOTAL_HARGA) 
+   FROM trans_penjualan_header cnt1  
+   WHERE cnt1.ACCESS_GROUP=new.ACCESS_GROUP AND date(cnt1.TRANS_DATE)=CURDATE()
+   GROUP BY cnt1.ACCESS_GROUP)
+   WHERE ACCESS_GROUP=new.ACCESS_GROUP  AND Val_Nm='TOTAL_PENJUALAN';
+
+    #===================================
+    #  REPORT -  UPDATE COUNT - TRANSAKSI DAILY
+    #===================================
+   UPDATE rpt_daily_chart SET Val_Cnt=(SELECT count(cnt2.TRANS_ID) 
+   FROM trans_penjualan_header cnt2  
+   WHERE cnt2.ACCESS_GROUP=new.ACCESS_GROUP  AND date(cnt2.TRANS_DATE)=CURDATE()
+   GROUP BY cnt2.ACCESS_GROUP)
+   WHERE ACCESS_GROUP=new.ACCESS_GROUP  AND Val_Nm='JUMLAH_TRANSAKSI';
+
+    #===================================
+    #  REPORT - UPDATE  RATA_RATA_PENJUALAN 
+    #===================================
+   UPDATE rpt_daily_chart SET Val_Cnt=(
+   SELECT sum(cnt3.TOTAL_HARGA)/count(cnt3.TRANS_ID) AS AVG
+   FROM trans_penjualan_header cnt3  
+   WHERE cnt3.ACCESS_GROUP=new.ACCESS_GROUP AND date(cnt3.TRANS_DATE)=CURDATE()
+   GROUP BY cnt3.ACCESS_GROUP)
+   WHERE ACCESS_GROUP=new.ACCESS_GROUP  AND Val_Nm='RATA_RATA_PENJUALAN';
+
+	
+	
+	
+	
+	
+	
+	
+	
+	#===================================
+    #  REPORT - CHART COUNT HARIAN TRANSAKSI
+    #===================================
+    SET SESSION GROUP_CONCAT_MAX_LEN = 1000000;
+    SELECT 
+         GROUP_CONCAT(
+	CONCAT('{"seriesname":"',d.STORE_NM,'","data":[',
+		'{"label":"1","value":"',d.VAL1,'","anchorBgColor":"#68acff"},','{"label":"2","value":"',d.VAL2,'","anchorBgColor":"#68acff"},',
+		'{"label":"3","value":"',d.VAL3,'","anchorBgColor":"#68acff"},','{"label":"4","value":"',d.VAL4,'","anchorBgColor":"#68acff"},',
+		'{"label":"5","value":"',d.VAL5,'","anchorBgColor":"#68acff"},','{"label":"6","value":"',d.VAL6,'","anchorBgColor":"#68acff"},',
+		'{"label":"7","value":"',d.VAL7,'","anchorBgColor":"#68acff"},','{"label":"8","value":"',d.VAL8,'","anchorBgColor":"#68acff"},',
+		'{"label":"9","value":"',d.VAL9,'","anchorBgColor":"#68acff"},','{"label":"10","value":"',d.VAL10,'","anchorBgColor":"#68acff"},',
+		'{"label":"11","value":"',d.VAL11,'","anchorBgColor":"#68acff"},','{"label":"12","value":"',d.VAL12,'","anchorBgColor":"#68acff"},',
+		'{"label":"13","value":"',d.VAL13,'","anchorBgColor":"#68acff"},','{"label":"14","value":"',d.VAL14,'","anchorBgColor":"#68acff"},',
+	                   '{"label":"15","value":"',d.VAL15,'","anchorBgColor":"#68acff"},','{"label":"16","value":"',d.VAL16,'","anchorBgColor":"#68acff"},',
+		'{"label":"17","value":"',d.VAL17,'","anchorBgColor":"#68acff"},','{"label":"18","value":"',d.VAL18,'","anchorBgColor":"#68acff"},',
+		'{"label":"19","value":"',d.VAL19,'","anchorBgColor":"#68acff"},','{"label":"20","value":"',d.VAL20,'","anchorBgColor":"#68acff"},',
+		'{"label":"21","value":"',d.VAL21,'","anchorBgColor":"#68acff"},','{"label":"22","value":"',d.VAL22,'","anchorBgColor":"#68acff"},',
+		'{"label":"23","value":"',d.VAL23,'","anchorBgColor":"#68acff"},','{"label":"24","value":"',d.VAL24,'","anchorBgColor":"#68acff"}',
+	                ']}'
+	 )
+          ) into @json
+     FROM
+    (SELECT th1.STORE_ID,th1.ACCESS_GROUP,s.STORE_NM,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='1' THEN HOUR(th1.TRANS_DATE) END) as VAL1,	count(CASE WHEN HOUR(th1.TRANS_DATE)='2' THEN HOUR(th1.TRANS_DATE) END) as VAL2,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='3' THEN HOUR(th1.TRANS_DATE) END) as VAL3,	count(CASE WHEN HOUR(th1.TRANS_DATE)='4' THEN HOUR(th1.TRANS_DATE) END) as VAL4,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='5' THEN HOUR(th1.TRANS_DATE) END) as VAL5,	count(CASE WHEN HOUR(th1.TRANS_DATE)='6' THEN HOUR(th1.TRANS_DATE) END) as VAL6,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='7' THEN HOUR(th1.TRANS_DATE) END) as VAL7,	count(CASE WHEN HOUR(th1.TRANS_DATE)='8' THEN HOUR(th1.TRANS_DATE) END) as VAL8,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='9' THEN HOUR(th1.TRANS_DATE) END) as VAL9,	count(CASE WHEN HOUR(th1.TRANS_DATE)='10' THEN HOUR(th1.TRANS_DATE) END) as VAL10,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='11' THEN HOUR(th1.TRANS_DATE) END) as VAL11,count(CASE WHEN HOUR(th1.TRANS_DATE)='12' THEN HOUR(th1.TRANS_DATE) END) as VAL12,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='13' THEN HOUR(th1.TRANS_DATE) END) as VAL13,count(CASE WHEN HOUR(th1.TRANS_DATE)='14' THEN HOUR(th1.TRANS_DATE) END) as VAL14,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='15' THEN HOUR(th1.TRANS_DATE) END) as VAL15,count(CASE WHEN HOUR(th1.TRANS_DATE)='16' THEN HOUR(th1.TRANS_DATE) END) as VAL16,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='17' THEN HOUR(th1.TRANS_DATE) END) as VAL17,count(CASE WHEN HOUR(th1.TRANS_DATE)='18' THEN HOUR(th1.TRANS_DATE) END) as VAL18,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='19' THEN HOUR(th1.TRANS_DATE) END) as VAL19,count(CASE WHEN HOUR(th1.TRANS_DATE)='20' THEN HOUR(th1.TRANS_DATE) END) as VAL20,
+	 count(CASE WHEN HOUR(th1.TRANS_DATE)='21' THEN HOUR(th1.TRANS_DATE) END) as VAL21,count(CASE WHEN HOUR(th1.TRANS_DATE)='22' THEN HOUR(th1.TRANS_DATE) END) as VAL22,
+	count(CASE WHEN HOUR(th1.TRANS_DATE)='23' THEN HOUR(th1.TRANS_DATE) END) as VAL23,count(CASE WHEN HOUR(th1.TRANS_DATE)='0' THEN HOUR(th1.TRANS_DATE) END) as VAL24
+     FROM trans_penjualan_header th1 LEFT JOIN store s on s.STORE_ID=th1.STORE_ID
+     WHERE th1.ACCESS_GROUP=new.ACCESS_GROUP AND date(TRANS_DATE)=date(new.TRANS_DATE)
+     GROUP BY th1.STORE_ID 
+     ORDER BY th1.STORE_ID
+  ) d;
+  #SELECT @json;
+  UPDATE rpt_daily_chart SET Val_Json=CONCAT('[',@json,']')
+  WHERE ACCESS_GROUP=new.ACCESS_GROUP AND Val_Nm='TRANSAKSI_HARIAN';
+
+
+    #=====================================
+    #   INSERT & UPDATE SUMMARY MONHLY LIST 
+    #=====================================
+    SET @cntBulan=0;
+    SELECT count(sm1.ACCESS_GROUP) into @cntBulan
+    FROM trans_penjualan_summary_monthly sm1
+    WHERE sm1.ACCESS_GROUP=new.ACCESS_GROUP AND sm1.TAHUN=YEAR(CURDATE()) AND sm1.BULAN=month(CURDATE());
+    IF @cntBulan=0  THEN
+         INSERT INTO trans_penjualan_summary_monthly ( ACCESS_GROUP,STORE_ID,TAHUN,BULAN,TOTAL_SALES,TOTAL_PRODUCT,JUMLAH_TRANSAKSI,
+                                                                                                  CNT_TUNAI,CNT_DEBET,CNT_KREDIT,CNT_EMONEY,CNT_BCA,CNT_MANDIRI,CNT_BNI,CNT_BRI,CREATE_AT
+         )
+        SELECT th1.ACCESS_GROUP,th1.STORE_ID,YEAR(th1.TRANS_DATE) AS TAHUN, MONTH(th1.TRANS_DATE) AS BULAN,
+	sum(th1.TOTAL_HARGA) as TOTAL_SALES,
+                  sum(th1.TOTAL_PRODUCT) as TOTAL_PRODUCT,
+	COUNT(ID) AS JUMLAH_TRANSAKSI,
+	COUNT(CASE WHEN th1.TYPE_PAY_ID=0 THEN th1.TYPE_PAY_ID END) as CNT_TUNAI,
+	COUNT(CASE WHEN th1.TYPE_PAY_ID=2 THEN th1.TYPE_PAY_ID END) as CNT_DEBET,
+	COUNT(CASE WHEN th1.TYPE_PAY_ID=3 THEN th1.TYPE_PAY_ID END) as CNT_KREDIT,
+	COUNT(CASE WHEN th1.TYPE_PAY_ID=5 THEN th1.TYPE_PAY_ID END) as CNT_EMONEY, 
+	COUNT(CASE WHEN th1.BANK_ID=1 THEN th1.TYPE_PAY_ID END) as CNT_BCA, 
+	COUNT(CASE WHEN th1.BANK_ID=2 THEN th1.TYPE_PAY_ID END) as CNT_MANDIRI, 
+	COUNT(CASE WHEN th1.BANK_ID=3 THEN th1.TYPE_PAY_ID END) as CNT_BNI, 
+	COUNT(CASE WHEN th1.BANK_ID=4 THEN th1.TYPE_PAY_ID END) as CNT_BRI, 
+                  max(TRANS_DATE) as CREATE_AT
+         FROM trans_penjualan_header th1 
+         WHERE th1.ACCESS_GROUP=new.ACCESS_GROUP AND month(th1.TRANS_DATE)=month(CURDATE()) #'2017-10-19'
+         GROUP BY th1.STORE_ID #,month(th1.TRANS_DATE)
+         ORDER BY th1.STORE_ID;
+  ELSE
+     UPDATE trans_penjualan_summary_monthly,		
+     (
+         SELECT sm2.ID,th3.TOTAL_SALES,th3.TOTAL_PRODUCT,th3.JUMLAH_TRANSAKSI,th3.CNT_TUNAI,th3.CNT_DEBET,th3.CNT_KREDIT,th3.CNT_EMONEY,th3.CNT_BCA,th3.CNT_MANDIRI,th3.CNT_BNI,th3.CNT_BRI
+         FROM
+	trans_penjualan_summary_monthly sm2 INNER JOIN 
+	(	
+                     SELECT th2.ACCESS_GROUP,th2.STORE_ID, YEAR(th2.TRANS_DATE) AS TAHUN, MONTH(th2.TRANS_DATE) AS BULAN,sum(th2.TOTAL_HARGA) as TOTAL_SALES,
+	                sum(th2.TOTAL_PRODUCT) as TOTAL_PRODUCT,
+	               COUNT(ID) AS JUMLAH_TRANSAKSI,
+	               COUNT(CASE WHEN th2.TYPE_PAY_ID=0 THEN th2.TYPE_PAY_ID END) as CNT_TUNAI,
+	               COUNT(CASE WHEN th2.TYPE_PAY_ID=2 THEN th2.TYPE_PAY_ID END) as CNT_DEBET,
+	               COUNT(CASE WHEN th2.TYPE_PAY_ID=3 THEN th2.TYPE_PAY_ID END) as CNT_KREDIT,
+	               COUNT(CASE WHEN th2.TYPE_PAY_ID=5 THEN th2.TYPE_PAY_ID END) as CNT_EMONEY, 
+	               COUNT(CASE WHEN th2.BANK_ID=1 THEN th2.TYPE_PAY_ID END) as CNT_BCA, 
+	               COUNT(CASE WHEN th2.BANK_ID=2 THEN th2.TYPE_PAY_ID END) as CNT_MANDIRI, 
+	               COUNT(CASE WHEN th2.BANK_ID=3 THEN th2.TYPE_PAY_ID END) as CNT_BNI, 
+	               COUNT(CASE WHEN th2.BANK_ID=4 THEN th2.TYPE_PAY_ID END) as CNT_BRI
+
+                    FROM trans_penjualan_header th2		
+	  WHERE th2.ACCESS_GROUP=new.ACCESS_GROUP AND month(th2.TRANS_DATE)=month(CURDATE()) #'2017-10-19'				  
+	  GROUP BY th2.STORE_ID#,month(th2.TRANS_DATE)
+	  ORDER BY th2.STORE_ID
+	)  th3 
+	ON sm2.ACCESS_GROUP=th3.ACCESS_GROUP AND 
+	       sm2.STORE_ID=th3.STORE_ID AND 
+	       sm2.TAHUN=th3.TAHUN AND 
+	       sm2.BULAN=th3.BULAN
+      ) rslt
+      SET trans_penjualan_summary_monthly.TOTAL_SALES=rslt.TOTAL_SALES,
+      trans_penjualan_summary_monthly.TOTAL_PRODUCT=rslt.TOTAL_PRODUCT,
+      trans_penjualan_summary_monthly.JUMLAH_TRANSAKSI=rslt.JUMLAH_TRANSAKSI,
+      trans_penjualan_summary_monthly.CNT_TUNAI=rslt.CNT_TUNAI,
+      trans_penjualan_summary_monthly.CNT_DEBET=rslt.CNT_DEBET,
+      trans_penjualan_summary_monthly.CNT_KREDIT=rslt.CNT_KREDIT,
+      trans_penjualan_summary_monthly.CNT_EMONEY=rslt.CNT_EMONEY,
+      trans_penjualan_summary_monthly.CNT_BCA=rslt.CNT_BCA,
+      trans_penjualan_summary_monthly.CNT_BNI=rslt.CNT_BNI,
+      trans_penjualan_summary_monthly.CNT_BRI=rslt.CNT_BRI    
+      WHERE trans_penjualan_summary_monthly.ID=rslt.ID;
+
+  END IF;
+
+    #===================================
+    #  REPORT - CHART SALES MANTLY OF YEAR
+    #===================================
+      SELECT 
+          GROUP_CONCAT(
+	CONCAT('{"seriesname":"',smy.STORE_NM,'","data":[',
+		'{"label":"january","value":"',smy.val1,'"},',
+		'{"label":"February","value":"',smy.val2,'"},',
+		'{"label":"March","value":"',smy.val3,'"},',
+		'{"label":"April","value":"',smy.val4,'"},',
+		'{"label":"Mey","value":"',smy.val5,'"},',
+		'{"label":"June","value":"',smy.val6,'"},',
+		'{"label":"July","value":"',smy.val7,'"},',
+		'{"label":"Agustus","value":"',smy.val8,'"},',
+		'{"label":"September","value":"',smy.val9,'"},',
+		'{"label":"Oktober","value":"',smy.val10,'"},',
+		'{"label":"November","value":"',smy.val11,'"},',
+		'{"label":"Desember","value":"',smy.val12,'"}',
+	           ']}'
+	 )
+             ) into @jsonBulanan
+        FROM
+              (
+	SELECT chsm1.STORE_ID,chsm1.ACCESS_GROUP,st.STORE_NM,chsm1.TAHUN,chsm1.BULAN,
+		(CASE WHEN chsm1.BULAN=1 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val1,
+		(CASE WHEN chsm1.BULAN=2 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val2,
+		(CASE WHEN chsm1.BULAN=3 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val3,
+		(CASE WHEN chsm1.BULAN=4 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val4,
+		(CASE WHEN chsm1.BULAN=5 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val5,
+		(CASE WHEN chsm1.BULAN=6 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val6,
+		(CASE WHEN chsm1.BULAN=7 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val7,
+		(CASE WHEN chsm1.BULAN=8 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val8,
+		(CASE WHEN chsm1.BULAN=9 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val9,
+		(CASE WHEN chsm1.BULAN=10 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val10,
+		(CASE WHEN chsm1.BULAN=11 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val11,
+		(CASE WHEN chsm1.BULAN=12 THEN chsm1.TOTAL_SALES ELSE 0 END) AS val12
+	FROM trans_penjualan_summary_monthly chsm1 LEFT JOIN store st on st.STORE_ID=chsm1.STORE_ID
+	WHERE chsm1.ACCESS_GROUP=new.ACCESS_GROUP AND TAHUN=YEAR(CURDATE())
+	GROUP BY chsm1.ACCESS_GROUP,chsm1.STORE_ID
+	ORDER BY chsm1.STORE_ID
+             )  smy;
+       #SELECT @json;
+         UPDATE rpt_daily_chart SET Val_Json=CONCAT('[',@jsonBulanan,']')
+         WHERE ACCESS_GROUP=new.ACCESS_GROUP AND Val_Nm='TRANSAKSI_BULANAN';
+
